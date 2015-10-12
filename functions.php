@@ -3,12 +3,22 @@
     require_once("../config_global.php");
     $database = "if15_anniant";
  
-    
-    function getAllData(){
-        
+    //vaikeväärtus sulgusdes, et vältida errorit, mis tekiks real 31 table.phps
+    function getAllData($keyword=""){
+		
+		$search="";
+		
+        if($keyword == ""){
+			//ei otsi
+			
+		}else{
+			//otsime
+			$search="AND number_plate LIKE %".$keyword."% AND color LIKE %".$keyword."%";
+		}
+		
         $mysqli = new mysqli($GLOBALS["servername"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
 		
-        $stmt = $mysqli->prepare("SELECT id, user_id, number_plate, color FROM car_plates WHERE deleted IS NULL");
+        $stmt = $mysqli->prepare("SELECT id, user_id, number_plate, color FROM car_plates WHERE deleted IS NULL $search");
         $stmt->bind_result($id_from_db, $user_id_from_db, $number_plate_from_db, $color_from_db);
         $stmt->execute();
         
